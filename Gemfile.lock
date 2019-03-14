@@ -36,16 +36,16 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     arel (6.0.4)
-    bcrypt (3.1.11)
+    bcrypt (3.1.12)
     builder (3.2.3)
     byebug (9.0.6)
     commonjs (0.2.7)
     concurrent-ruby (1.1.4)
     crass (1.0.4)
-    devise (4.1.1)
+    devise (4.6.1)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
-      railties (>= 4.1.0, < 5.1)
+      railties (>= 4.1.0, < 6.0)
       responders
       warden (~> 1.2.3)
     devise-i18n (1.1.2)
@@ -113,9 +113,9 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (12.3.2)
-    responders (2.4.0)
-      actionpack (>= 4.2.0, < 5.3)
-      railties (>= 4.2.0, < 5.3)
+    responders (2.4.1)
+      actionpack (>= 4.2.0, < 6.0)
+      railties (>= 4.2.0, < 6.0)
     russian (0.6.0)
       i18n (>= 0.5.0)
     sprockets (3.7.2)
@@ -146,7 +146,7 @@ PLATFORMS
 
 DEPENDENCIES
   byebug
-  devise (~> 4.1.1)
+  devise (~> 4.6.1)
   devise-i18n
   font-awesome-rails
   jquery-rails
