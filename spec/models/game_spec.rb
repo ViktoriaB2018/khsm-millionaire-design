@@ -134,11 +134,15 @@ RSpec.describe Game, type: :model do
     context '.answer_current_question!' do
       # Неправильный ответ должен заканчивать игру
       it 'wrong right answer finishes game' do
+        game_w_questions.current_level = 6
         # Проверяем неверный ответ
         expect(game_w_questions.answer_current_question!('a')).to be_falsey
 
         # Проверяем что игра закончилась если ответ не верный
         expect(game_w_questions.finished?).to be_truthy
+
+        # Проверяем что приз равен ближ. несгораемой сумме
+        expect(game_w_questions.prize).to eq(1_000)
       end
 
       # Последний правильный ответ должен заканчивать игру
@@ -150,16 +154,19 @@ RSpec.describe Game, type: :model do
 
         # Проверяем что игра закончилась при последнем верном ответе
         expect(game_w_questions.finished?).to be_truthy
+
+        # Проверяем что приз равен миллиону
+        expect(game_w_questions.prize).to eq(1_000_000)
       end
 
       # Правильный ответ продолжает игру
       it 'right answer continues game' do
-        game_w_questions.current_level = Question::QUESTION_LEVELS.max - 1
+        game_w_questions.current_level = 6
 
         # Проверяем верный ответ
         expect(game_w_questions.answer_current_question!('d')).to be_truthy
 
-        # Проверяем что игра закончилась при последнем верном ответе
+        # Проверяем что игра не закончилась
         expect(game_w_questions.finished?).to be_falsey
       end
 
