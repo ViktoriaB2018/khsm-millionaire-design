@@ -21,6 +21,11 @@ RSpec.describe GameQuestion, type: :model do
                                         )
     end
 
+    # Проверяем метод correct_answer_key
+    it 'correct .correct_answer_key' do
+      expect(game_question.correct_answer_key).to eq('b')
+    end
+
     # Проверяем метод answer_correct?
     it 'correct .answer_correct?' do
       # Именно под буквой b выше мы спрятали указатель на верный ответ
