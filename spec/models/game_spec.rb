@@ -88,15 +88,18 @@ RSpec.describe Game, type: :model do
 
     # Проверяем метод .current_game_question
     it '.current_game_question returns new current question' do
-      level = game_w_questions.current_level
-      q = game_w_questions.game_questions[level]
+      q = game_w_questions.game_questions[0]
       expect(game_w_questions.current_game_question).to eq(q)
     end
 
     # Проверяем метод .previous_level
-    it '.previous_level returns current_level - 1' do
-      level = game_w_questions.current_level
-      expect(game_w_questions.previous_level).to eq(level - 1)
+    it '.previous_level returns (current_level - 1)' do
+      # При current_level в начале игры
+      expect(game_w_questions.previous_level).to eq(-1)
+
+      # При current_level в середине игры
+      game_w_questions.current_level = 6
+      expect(game_w_questions.previous_level).to eq(5)
     end
 
     # Проверяем статусы игры
@@ -125,6 +128,49 @@ RSpec.describe Game, type: :model do
       it ':money' do
         expect(game_w_questions.status).to eq(:money)
       end
+    end
+
+    # Проверяем метод answer_current_question!
+    context '.answer_current_question!' do
+      # Неправильный ответ должен заканчивать игру
+      it 'wrong right answer finishes game' do
+        # Проверяем неверный ответ
+        expect(game_w_questions.answer_current_question!('a')).to be_falsey
+
+        # Проверяем что игра закончилась если ответ не верный
+        expect(game_w_questions.finished?).to be_truthy
+      end
+
+      # Последний правильный ответ должен заканчивать игру
+      it 'last right answer finishes game' do
+        game_w_questions.current_level = Question::QUESTION_LEVELS.max
+
+        # Проверяем верный ответ
+        expect(game_w_questions.answer_current_question!('d')).to be_truthy
+
+        # Проверяем что игра закончилась при последнем верном ответе
+        expect(game_w_questions.finished?).to be_truthy
+      end
+
+      # Правильный ответ продолжает игру
+      it 'right answer continues game' do
+        game_w_questions.current_level = Question::QUESTION_LEVELS.max - 1
+
+        # Проверяем верный ответ
+        expect(game_w_questions.answer_current_question!('d')).to be_truthy
+
+        # Проверяем что игра закончилась при последнем верном ответе
+        expect(game_w_questions.finished?).to be_falsey
+      end
+
+      # Проверяем правильный ответ после timeout
+      it 'answer is right after timeout' do
+        game_w_questions.created_at = 1.hour.ago
+        game_w_questions.time_out!
+
+        expect(game_w_questions.answer_current_question!('d')).to be_falsey
+      end
+
     end
   end
 end
