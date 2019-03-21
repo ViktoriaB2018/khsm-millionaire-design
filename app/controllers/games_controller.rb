@@ -58,7 +58,7 @@ class GamesController < ApplicationController
     end
 
     if @game.finished?
-      # Если игра закончилась, отправялем юзера на свой профиль
+      # Если игра закончилась, отправляем юзера на свой профиль
       redirect_to user_path(current_user)
     else
       # Иначе, обратно на экран игры
@@ -72,7 +72,7 @@ class GamesController < ApplicationController
     # Заканчиваем игру
     @game.take_money!
 
-    # Отправялем пользователя на профиль с сообщение о выигрыше
+    # Отправляем пользователя на профиль с сообщение о выигрыше
     redirect_to user_path(current_user), flash: {
       warning: I18n.t(
         'controllers.games.game_finished',

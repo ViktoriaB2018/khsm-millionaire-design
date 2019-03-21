@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'support/my_spec_helper'
 
 RSpec.describe Game, type: :model do
-  # Пользователь для создания игр
+  # Пользоваль для создания игр
   let(:user) { FactoryBot.create(:user) }
 
   # Игра с вопросами для проверки работы
@@ -66,24 +66,6 @@ RSpec.describe Game, type: :model do
       # Проверяем, что игра продолжается/не закончена
       expect(game_w_questions.status).to eq(:in_progress)
       expect(game_w_questions.finished?).to be_falsey
-    end
-
-    # Проверяем метод .take_money!
-    it '.take_money! finishes game and takes money' do
-      q = game_w_questions.current_game_question
-      game_w_questions.answer_current_question!(q.correct_answer_key)
-
-      game_w_questions.take_money!
-
-      prize = game_w_questions.prize
-      expect(prize).to be > 0
-
-      # Проверяем, что на баланс игрока зачислились деньги
-      expect(user.balance).to eq(prize)
-
-      # Проверяем, что игра закончена
-      expect(game_w_questions.finished?).to be_truthy
-      expect(game_w_questions.status).to eq(:money)
     end
 
     # Проверяем метод .current_game_question
