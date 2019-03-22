@@ -129,8 +129,9 @@ RSpec.describe GamesController, type: :controller do
       put :answer, id: game_w_questions.id, letter: "a"
       game = assigns(:game)
 
-      # Игра закончена
+      # Игра закончена поражением
       expect(game.finished?).to be_truthy
+      expect(game.status).to eq(:fail)
 
       # Редирект на профиль юзера
       expect(response).to redirect_to(user_path(user))
@@ -186,6 +187,25 @@ RSpec.describe GamesController, type: :controller do
       # и редирект на страницу старой игры
       expect(response).to redirect_to(game_path(game_w_questions))
       expect(flash[:alert]).to be
+    end
+
+    # Пользователь использует "помощь зала"
+    it 'uses audience help' do
+      # Проверяем, что у текущего вопроса нет подсказок
+      expect(game_w_questions.current_game_question.help_hash[:audience_help]).not_to be
+      # И подсказка не использована
+      expect(game_w_questions.audience_help_used).to be_falsey
+
+      # Пишем запрос в контроллер с нужным типом (put — не создаёт новых сущностей, но что-то меняет)
+      put :help, id: game_w_questions.id, help_type: :audience_help
+      game = assigns(:game)
+
+      # Проверяем, что игра не закончилась, что флажок установился, и подсказка записалась
+      expect(game.finished?).to be_falsey
+      expect(game.audience_help_used).to be_truthy
+      expect(game.current_game_question.help_hash[:audience_help]).to be
+      expect(game.current_game_question.help_hash[:audience_help].keys).to contain_exactly('a', 'b', 'c', 'd')
+      expect(response).to redirect_to(game_path(game))
     end
   end
 end
