@@ -58,7 +58,7 @@ RSpec.describe GameQuestion, type: :model do
 
       # Добавили подсказку. Этот метод реализуем в модели
       # GameQuestion
-      game_question.add_audience_help
+      game_question.apply_help!(:audience_help)
 
       # Ожидаем, что в хеше появилась подсказка
       expect(game_question.help_hash).to include(:audience_help)
