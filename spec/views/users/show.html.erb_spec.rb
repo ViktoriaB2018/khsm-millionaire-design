@@ -1,16 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe 'users/show', type: :view do
-  let(:user) { FactoryBot.create(:user, name: 'Вика') }
-
   before(:each) do
+    user = FactoryBot.create(:user, name: 'Vika')
+    @games = [FactoryBot.build_stubbed(:game, id: 1, created_at: Time.now, current_level: 6)]
     sign_in user
-    stub_template 'users/_game.html.erb' => 'User game goes here'
+    #allow(controller).to receive(:current_user).and_return(:user)
+    assign(:user, user)
+    assign(:games, @games)
     render
   end
 
   it 'renders user name' do
-    expect(rendered).to match 'Вика'
+    expect(rendered).to match 'Vika'
   end
 
   it 'renders change name and password button for current user only' do
@@ -18,6 +20,6 @@ RSpec.describe 'users/show', type: :view do
   end
 
   it 'renders partial with users game' do
-  expect(rendered).to have_content 'User game goes here'
+  assert_template partial: 'users/_game', count: @games.count
   end
 end

@@ -52,6 +52,24 @@ RSpec.describe GameQuestion, type: :model do
 
   #Тесты для нового функционала подсказок
   context 'user helpers' do
+    it 'correct .help_hash' do
+      # на фабрике у нас изначально хэш пустой
+      expect(game_question.help_hash).to eq({})
+
+      # добавляем пару ключей
+      game_question.help_hash[:key1] = 'one'
+      game_question.help_hash['key2'] = 'two'
+
+      # сохраняем модель и ожидаем сохранения хорошего
+      expect(game_question.save).to be_truthy
+
+      # загрузим этот же вопрос из базы для чистоты эксперимента
+      gq = GameQuestion.find(game_question.id)
+
+      # проверяем новые значение хэша
+      expect(gq.help_hash).to eq({key1: 'one', 'key2' => 'two'})
+    end
+
     it 'correct audience_help' do
       # Проверяем, что объект не включает эту подсказку
       expect(game_question.help_hash).not_to include(:audience_help)
@@ -69,22 +87,39 @@ RSpec.describe GameQuestion, type: :model do
       expect(ah.keys).to contain_exactly('a', 'b', 'c', 'd')
     end
 
-    it 'correct .help_hash' do
-      # на фабрике у нас изначально хэш пустой
-      expect(game_question.help_hash).to eq({})
+    it 'correct fifty_fifty' do
+      # Проверяем, что объект не включает эту подсказку
+      expect(game_question.help_hash).not_to include(:fifty_fifty)
 
-      # добавляем пару ключей
-      game_question.help_hash[:key1] = 'one'
-      game_question.help_hash['key2'] = 'two'
+      # Добавили подсказку. Этот метод реализуем в модели
+      # GameQuestion
+      game_question.apply_help!(:fifty_fifty)
 
-      # сохраняем модель и ожидаем сохранения хорошего
-      expect(game_question.save).to be_truthy
+      # Ожидаем, что в хеше появилась подсказка
+      expect(game_question.help_hash).to include(:fifty_fifty)
 
-      # загрузим этот же вопрос из базы для чистоты эксперимента
-      gq = GameQuestion.find(game_question.id)
+      # Дёргаем хеш
+      ff = game_question.help_hash[:fifty_fifty]
+      # Проверяем, что остались 2 варианта, один из них верный
+      expect(ff.size).to eq(2)
+      expect(ff).to include('b')
+    end
 
-      # проверяем новые значение хэша
-      expect(gq.help_hash).to eq({key1: 'one', 'key2' => 'two'})
+    it 'correct friend_call' do
+      # Проверяем, что объект не включает эту подсказку
+      expect(game_question.help_hash).not_to include(:friend_call)
+
+      # Добавили подсказку. Этот метод реализуем в модели
+      # GameQuestion
+      game_question.apply_help!(:friend_call)
+
+      # Ожидаем, что в хеше появилась подсказка
+      expect(game_question.help_hash).to include(:friend_call)
+
+      # Дёргаем хеш
+      fc = game_question.help_hash[:friend_call]
+      # Проверяем
+      expect(fc).to match(/считает, что это вариант [A|B|C|D]/)
     end
   end
 end
