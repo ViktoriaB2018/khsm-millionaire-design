@@ -119,7 +119,7 @@ RSpec.describe GameQuestion, type: :model do
       # Дёргаем хеш
       fc = game_question.help_hash[:friend_call]
       # Проверяем
-      expect(fc).to match(/считает, что это вариант [A|B|C|D]/)
+      expect(fc).to match(/считает, что это вариант [ABCD]/)
     end
   end
 end
