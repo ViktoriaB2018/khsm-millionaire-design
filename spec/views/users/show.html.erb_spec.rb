@@ -1,13 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe 'users/show', type: :view do
+  let(:user) { FactoryBot.create(:user, name: 'Vika') }
+  let(:games) { [FactoryBot.build_stubbed(:game, id: 1, created_at: Time.now, current_level: 6)] }
+
   before(:each) do
-    user = FactoryBot.create(:user, name: 'Vika')
-    @games = [FactoryBot.build_stubbed(:game, id: 1, created_at: Time.now, current_level: 6)]
-    sign_in user
-    #allow(controller).to receive(:current_user).and_return(:user)
+    allow(controller).to receive(:current_user) { user }
     assign(:user, user)
-    assign(:games, @games)
+    assign(:games, games)
     render
   end
 
@@ -20,6 +20,6 @@ RSpec.describe 'users/show', type: :view do
   end
 
   it 'renders partial with users game' do
-  assert_template partial: 'users/_game', count: @games.count
+    assert_template partial: 'users/_game', count: games.count
   end
 end
